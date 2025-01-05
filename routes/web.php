@@ -40,6 +40,35 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('pelanggan', PelangganController::class);
     Route::resource('supir', SupirController::class);
     Route::resource('mobil', MobilController::class);
+
+    // Routes untuk pengiriman
+    Route::get('/pengiriman', [App\Http\Controllers\Admin\PengirimanController::class, 'index'])->name('pengiriman.index');
+    Route::get('/pengiriman/{pengiriman}', [App\Http\Controllers\Admin\PengirimanController::class, 'show'])->name('pengiriman.show');
+    Route::post('/pengiriman/{pengiriman}/approve', [App\Http\Controllers\Admin\PengirimanController::class, 'approve'])->name('pengiriman.approve');
+    Route::get('/pengiriman/{pengiriman}/reject', [App\Http\Controllers\Admin\PengirimanController::class, 'reject'])->name('pengiriman.reject');
+});
+
+// Route group untuk pelanggan
+Route::middleware(['auth', 'role:pengguna'])->prefix('pelanggan')->name('pelanggan.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('pelanggan.dashboard');
+    })->name('dashboard');
+
+    // Routes untuk pengiriman
+    Route::resource('pengiriman', App\Http\Controllers\Pelanggan\PengirimanController::class);
+});
+
+// Route group untuk supir
+Route::middleware(['auth', 'role:supir'])->prefix('supir')->name('supir.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('supir.dashboard');
+    })->name('dashboard');
+
+    // Routes untuk pengiriman
+    Route::get('/pengiriman', [App\Http\Controllers\Supir\PengirimanController::class, 'index'])->name('pengiriman.index');
+    Route::get('/pengiriman/{pengiriman}', [App\Http\Controllers\Supir\PengirimanController::class, 'show'])->name('pengiriman.show');
+    Route::post('/pengiriman/{pengiriman}/update-status', [App\Http\Controllers\Supir\PengirimanController::class, 'updateStatus'])->name('pengiriman.updateStatus');
+    Route::post('/pengiriman/{pengiriman}/update-lokasi', [App\Http\Controllers\Supir\PengirimanController::class, 'updateLokasi'])->name('pengiriman.updateLokasi');
 });
 
 require __DIR__.'/auth.php';
