@@ -28,6 +28,12 @@
                     Mobil
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Request::routeIs('admin.pengiriman.*') ? 'active' : '' }}" href="{{ route('admin.pengiriman.index') }}">
+                    <i class="bi bi-box-seam me-2"></i>
+                    Pengiriman
+                </a>
+            </li>
             <li class="nav-item mt-3">
                 <form method="POST" action="{{ route('logout') }}" class="px-3">
                     @csrf
