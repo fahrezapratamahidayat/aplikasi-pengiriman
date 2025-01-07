@@ -1,32 +1,43 @@
-<nav class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse">
-    <div class="position-sticky pt-3">
-        <div class="px-3 mb-4">
-            <h5>Panel Pelanggan</h5>
+<nav class="sidebar col-md-3 col-lg-2">
+    <div class="position-sticky">
+        <!-- Logo -->
+        <div class="px-4 py-4">
+            <h4 class="text-white mb-0">WeKirim</h4>
+            <small class="text-muted">Panel Pelanggan</small>
         </div>
+
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link {{ Request::routeIs('pelanggan.dashboard') ? 'active' : '' }}"
-                    href="{{ route('pelanggan.dashboard') }}">
+                   href="{{ route('pelanggan.dashboard') }}">
                     <i class="bi bi-speedometer2 me-2"></i>
                     Dashboard
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ Request::routeIs('pelanggan.pengiriman.*') ? 'active' : '' }}"
-                    href="{{ route('pelanggan.pengiriman.index') }}">
+                   href="{{ route('pelanggan.pengiriman.index') }}">
                     <i class="bi bi-box-seam me-2"></i>
                     Pengiriman Saya
                 </a>
             </li>
-            <li class="nav-item mt-3">
-                <form method="POST" action="{{ route('logout') }}" class="px-3">
-                    @csrf
-                    <button type="submit" class="btn btn-danger btn-sm w-100">
-                        <i class="bi bi-box-arrow-right me-2"></i>
-                        Logout
-                    </button>
-                </form>
-            </li>
+
+            {{-- <li class="nav-item">
+                <a class="nav-link {{ Request::routeIs('pelanggan.tracking.*') ? 'active' : '' }}"
+                   href="{{ route('pelanggan.tracking.index') }}">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    Lacak Kiriman
+                </a>
+            </li> --}}
+
+            {{-- <li class="nav-item">
+                <a class="nav-link {{ Request::routeIs('pelanggan.profile') ? 'active' : '' }}"
+                   href="{{ route('pelanggan.profile') }}">
+                    <i class="bi bi-person me-2"></i>
+                    Profil Saya
+                </a>
+            </li> --}}
         </ul>
     </div>
 </nav>
