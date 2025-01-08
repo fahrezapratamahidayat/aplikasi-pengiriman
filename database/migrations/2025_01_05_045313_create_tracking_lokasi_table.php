@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('tracking_lokasi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengiriman_id')->constrained('pengiriman');
-            $table->string('latitude');
-            $table->string('longitude');
-            $table->text('keterangan')->nullable();
+            $table->foreignId('pengiriman_id')->constrained('pengiriman')->onDelete('cascade');
+            $table->string('maps_link');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
+
         });
     }
 

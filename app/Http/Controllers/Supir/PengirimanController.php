@@ -43,15 +43,13 @@ class PengirimanController extends Controller
     public function updateLokasi(Request $request, Pengiriman $pengiriman)
     {
         $validated = $request->validate([
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'maps_link' => 'required|url',
             'keterangan' => 'nullable',
         ]);
 
         TrackingLokasi::create([
             'pengiriman_id' => $pengiriman->id,
-            'latitude' => $validated['latitude'],
-            'longitude' => $validated['longitude'],
+            'maps_link' => $validated['maps_link'],
             'keterangan' => $validated['keterangan'],
         ]);
 

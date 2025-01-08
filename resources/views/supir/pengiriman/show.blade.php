@@ -73,9 +73,8 @@
                             <div class="timeline-content">
                                 <p>{{ $track->keterangan ?? 'Update lokasi' }}</p>
                                 <small>
-                                    <a href="https://www.google.com/maps?q={{ $track->latitude }},{{ $track->longitude }}"
-                                        target="_blank">
-                                        Lihat di Maps
+                                    <a href="{{ $track->maps_link }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-geo-alt"></i> Lihat di Maps
                                     </a>
                                 </small>
                             </div>
@@ -90,15 +89,30 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
+                                    <label class="form-label">Link Google Maps</label>
+                                    <input type="text" class="form-control" name="maps_link" id="maps_link"
+                                        placeholder="Contoh: https://maps.app.goo.gl/2BC1NdqLeuPexa2k6" required>
+                                    <small class="text-muted">Share lokasi dari Google Maps</small>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mb-3">
                                     <label class="form-label">Keterangan Update</label>
                                     <input type="text" class="form-control" name="keterangan"
                                         placeholder="Contoh: Barang sedang dalam perjalanan">
                                 </div>
                             </div>
-                            <input type="hidden" name="latitude" id="latitude">
-                            <input type="hidden" name="longitude" id="longitude">
                         </div>
-                        <button type="submit" class="btn btn-primary" id="updateLokasiBtn">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Cara mendapatkan link:
+                            <ol class="mb-0">
+                                <li>Buka Google Maps</li>
+                                <li>Pilih lokasi yang dituju</li>
+                                <li>Klik tombol Share/Bagikan</li>
+                                <li>Pilih "Copy Link" atau "Salin Link"</li>
+                            </ol>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
                             <i class="bi bi-geo-alt"></i> Update Lokasi
                         </button>
                     </form>
@@ -187,37 +201,35 @@
 document.getElementById('updateLokasiForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            document.getElementById('latitude').value = position.coords.latitude;
-            document.getElementById('longitude').value = position.coords.longitude;
+    const mapsLink = document.getElementById('maps_link').value;
+    const keterangan = document.querySelector('input[name="keterangan"]').value;
 
-            // Kirim form dengan AJAX
-            fetch('{{ route("supir.pengiriman.updateLokasi", $pengiriman->id) }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    keterangan: document.querySelector('input[name="keterangan"]').value
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Lokasi berhasil diupdate');
-                location.reload();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal mengupdate lokasi');
-            });
-        });
-    } else {
-        alert("Browser Anda tidak mendukung geolocation");
-    }
+    // Kirim data ke server
+    fetch('{{ route("supir.pengiriman.updateLokasi", $pengiriman->id) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            maps_link: mapsLink,  // Ubah dari latitude/longitude ke maps_link
+            keterangan: keterangan
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Lokasi berhasil diupdate');
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal mengupdate lokasi: ' + error.message);
+    });
 });
 </script>
 @endpush

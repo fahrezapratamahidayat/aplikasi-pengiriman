@@ -74,9 +74,8 @@
                             <div class="timeline-content">
                                 <p>{{ $track->keterangan ?? 'Update lokasi' }}</p>
                                 <small>
-                                    <a href="https://www.google.com/maps?q={{ $track->latitude }},{{ $track->longitude }}"
-                                        target="_blank">
-                                        Lihat di Maps
+                                    <a href="{{ $track->maps_link }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-geo-alt"></i> Lihat di Maps
                                     </a>
                                 </small>
                             </div>

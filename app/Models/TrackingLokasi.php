@@ -13,8 +13,7 @@ class TrackingLokasi extends Model
 
     protected $fillable = [
         'pengiriman_id',
-        'latitude',
-        'longitude',
+        'maps_link',
         'keterangan'
     ];
 

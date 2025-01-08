@@ -55,6 +55,21 @@
                                     class="btn btn-sm btn-info">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                @if($item->status === 'pending')
+                                    <a href="{{ route('pelanggan.pengiriman.edit', $item->id) }}"
+                                        class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="{{ route('pelanggan.pengiriman.destroy', $item->id) }}"
+                                        method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Yakin ingin menghapus pengiriman ini?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @empty
