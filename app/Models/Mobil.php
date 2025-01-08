@@ -18,4 +18,9 @@ class Mobil extends Model
         'status',
         'keterangan'
     ];
+
+    public function pengiriman()
+    {
+        return $this->hasMany(Pengiriman::class);
+    }
 }

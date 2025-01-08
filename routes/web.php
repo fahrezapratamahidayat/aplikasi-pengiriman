@@ -50,9 +50,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 // Route group untuk pelanggan
 Route::middleware(['auth', 'role:pengguna'])->prefix('pelanggan')->name('pelanggan.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('pelanggan.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Pelanggan\DashboardController::class, 'index'])->name('dashboard');
 
     // Routes untuk pengiriman
     Route::resource('pengiriman', App\Http\Controllers\Pelanggan\PengirimanController::class);
@@ -60,9 +58,7 @@ Route::middleware(['auth', 'role:pengguna'])->prefix('pelanggan')->name('pelangg
 
 // Route group untuk supir
 Route::middleware(['auth', 'role:supir'])->prefix('supir')->name('supir.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('supir.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Supir\DashboardController::class, 'index'])->name('dashboard');
 
     // Routes untuk pengiriman
     Route::get('/pengiriman', [App\Http\Controllers\Supir\PengirimanController::class, 'index'])->name('pengiriman.index');
@@ -70,5 +66,11 @@ Route::middleware(['auth', 'role:supir'])->prefix('supir')->name('supir.')->grou
     Route::post('/pengiriman/{pengiriman}/update-status', [App\Http\Controllers\Supir\PengirimanController::class, 'updateStatus'])->name('pengiriman.updateStatus');
     Route::post('/pengiriman/{pengiriman}/update-lokasi', [App\Http\Controllers\Supir\PengirimanController::class, 'updateLokasi'])->name('pengiriman.updateLokasi');
 });
+
+// Ganti route dashboard default
+Route::get('/dashboard', function () {
+    $role = auth()->user()->role->name;
+    return redirect()->route($role . '.dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
