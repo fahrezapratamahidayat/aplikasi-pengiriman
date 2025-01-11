@@ -27,7 +27,7 @@
                         @if (Route::has('login'))
                             <div class="space-x-4">
                                 @auth
-                                    <a href="{{ url('/dashboard') }}" class="btn btn-primary">Dashboard</a>
+                                    <a href="{{ url('pelanggan/dashboard') }}" class="btn btn-primary">Dashboard</a>
                                 @else
                                     <a href="{{ route('login') }}" class="btn btn-outline-primary">Masuk</a>
                                     @if (Route::has('register'))
