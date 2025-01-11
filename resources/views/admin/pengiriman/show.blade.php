@@ -118,6 +118,13 @@
                     <h6>Total Biaya</h6>
                     <p class="h3">Rp {{ number_format($pengiriman->total_harga, 0, ',', '.') }}</p>
 
+                    @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    @endif
+
                     @if($pengiriman->status === 'pending')
                     <hr>
                     <form action="{{ route('admin.pengiriman.approve', $pengiriman->id) }}" method="POST">
@@ -127,7 +134,14 @@
                             <select class="form-select @error('supir_id') is-invalid @enderror" name="supir_id" required>
                                 <option value="">Pilih Supir</option>
                                 @foreach($supirs as $supir)
-                                <option value="{{ $supir->id }}">{{ $supir->name }}</option>
+                                <option value="{{ $supir->id }}">
+                                    {{ $supir->name }}
+                                    @if($supir->pengirimanSupir->whereIn('status', ['approved', 'pickup', 'dalam_pengiriman'])->count() > 0)
+                                        (Sedang Mengirim)
+                                    @else
+                                        (Tersedia)
+                                    @endif
+                                </option>
                                 @endforeach
                             </select>
                             @error('supir_id')
