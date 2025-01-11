@@ -54,4 +54,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pengiriman::class, 'supir_id');
     }
+
+    public function isAvailable()
+    {
+        return !$this->pengirimanSupir()
+            ->whereIn('status', ['approved', 'pickup', 'dalam_pengiriman'])
+            ->exists();
+    }
 }
