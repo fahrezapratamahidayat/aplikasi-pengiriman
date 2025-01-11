@@ -18,8 +18,16 @@ class PengirimanController extends Controller
 
     public function show(Pengiriman $pengiriman)
     {
-        $supirs = User::where('role_id', 2)->get();
+        // Ambil supir yang tidak sedang dalam pengiriman
+        $supirs = User::where('role_id', 2)
+            ->whereDoesntHave('pengirimanSupir', function($query) {
+                $query->whereIn('status', ['approved', 'pickup', 'dalam_pengiriman']);
+            })
+            ->get();
+
+        // Ambil mobil yang tersedia
         $mobils = Mobil::where('status', 'tersedia')->get();
+
         return view('admin.pengiriman.show', compact('pengiriman', 'supirs', 'mobils'));
     }
 
@@ -29,6 +37,26 @@ class PengirimanController extends Controller
             'supir_id' => 'required|exists:users,id',
             'mobil_id' => 'required|exists:mobils,id',
         ]);
+
+        // Cek lagi apakah supir masih tersedia
+        $supirTersedia = User::where('id', $validated['supir_id'])
+            ->whereDoesntHave('pengirimanSupir', function($query) {
+                $query->whereIn('status', ['approved', 'pickup', 'dalam_pengiriman']);
+            })
+            ->exists();
+
+        if (!$supirTersedia) {
+            return back()->with('error', 'Supir sudah tidak tersedia. Silakan pilih supir lain.');
+        }
+
+        // Cek lagi apakah mobil masih tersedia
+        $mobilTersedia = Mobil::where('id', $validated['mobil_id'])
+            ->where('status', 'tersedia')
+            ->exists();
+
+        if (!$mobilTersedia) {
+            return back()->with('error', 'Mobil sudah tidak tersedia. Silakan pilih mobil lain.');
+        }
 
         $pengiriman->update([
             'status' => 'approved',
